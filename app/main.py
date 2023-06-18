@@ -5,6 +5,7 @@ import os
 import json
 import hashlib
 import subprocess
+from dotenv import load_dotenv
 
 
 class Parameter(BaseModel):
@@ -22,7 +23,8 @@ class BlenderInput(BaseModel):
     object_name: str
     modifiers: List[Modifier]
 
-
+load_dotenv()
+BLENDER_PROJECT_PATH = os.getenv("BLENDER_PROJECT_PATH")
 app = FastAPI()
 
 
@@ -42,7 +44,7 @@ async def set_data(data: BlenderInput):
 
     blender_command = [
         "blender",
-        "/Users/leonardo/workspace/polygona/blender-engine/projects/table.blend",
+        BLENDER_PROJECT_PATH,
         "--background",
         "--python",
         "blender_script.py",
