@@ -12,6 +12,12 @@ docker build -t blender-container .
 docker run -it --rm -p 8000:8000 blender-container
 ```
 
+## Access container bash shell
+```
+docker exec -it <container_id_or_name> /bin/bash
+
+```
+
 ### Upload to DO
 ```
 docker tag blender-container registry.digitalocean.com/polygona/blender-engine

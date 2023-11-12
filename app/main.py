@@ -47,7 +47,7 @@ async def set_data(data: BlenderInput):
         BLENDER_PROJECT_PATH,
         "--background",
         "--python",
-        "blender_script.py",
+        "render_script.py",
         json_file_path,
     ]
     subprocess.run(blender_command)
