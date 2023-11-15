@@ -27,6 +27,23 @@ load_dotenv()
 BLENDER_PROJECT_PATH = os.getenv("BLENDER_PROJECT_PATH")
 app = FastAPI()
 
+@app.get("/meshes")
+async def get_meshes():
+    blender_command = [
+        "blender",
+        BLENDER_PROJECT_PATH,
+        "--background",
+        "--python",
+        "inspect_script.py",
+    ]
+    subprocess.run(blender_command)
+
+    meshes_file_path = os.path.abspath("/tmp/blender/meshes.json")
+    with open(meshes_file_path, "r") as file:
+        meshes = json.load(file)
+
+    return {"meshes": meshes}
+
 
 @app.post("/render")
 async def set_data(data: BlenderInput):
