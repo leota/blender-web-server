@@ -14,7 +14,7 @@ docker run -it --rm -p 8000:8000 blender-container
 
 ## Access container bash shell
 ```
-docker exec -it <container_id_or_name> /bin/bash
+docker exec -it blender-container /bin/bash
 
 ```
 

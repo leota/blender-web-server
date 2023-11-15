@@ -1,15 +1,23 @@
 import bpy
+import logging
 from typing import List
 
+
+logging.basicConfig(level=logging.INFO)
+
 def get_scene_mesh_names() -> List[str]:
-    meshes = []
-    scene = bpy.context.scene
+    try:
+        meshes = []
+        scene = bpy.context.scene
 
-    for obj in scene.objects:
-        if obj.type == 'MESH':
-            meshes.append(obj.name)
+        for obj in scene.objects:
+            if obj.type == 'MESH':
+                meshes.append(obj.name)
 
-    return meshes
+        return meshes
+    except Exception as e:
+        logging.error(f"Failed to get meshes: {e}", exc_info=True)
+        raise Exception(f"Failed to get meshes: {e}")
 
 def load_blend_file(blend_file_path: str):
     """
@@ -18,10 +26,11 @@ def load_blend_file(blend_file_path: str):
     :param blend_file_path: The path to the .blend file.
     """
     try:
-        # Load the .blend file
-        with bpy.data.libraries.load(blend_file_path) as (data_from, data_to):
-            data_to.objects = data_from.objects
-        
+        # Load the .blend file data
+        with bpy.data.libraries.load(blend_file_path, link=False) as (data_from, data_to):
+            # Here you can specify what to load e.g., objects, materials etc.
+            data_to.objects = [name for name in data_from.objects]
+
         # Link the objects to the current scene
         for obj in data_to.objects:
             if obj is not None:

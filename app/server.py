@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 import bpy
 from inputs import ImportProjectInput
 from utils import get_scene_mesh_names, load_blend_file
@@ -20,7 +20,7 @@ async def import_project(data: ImportProjectInput):
         load_blend_file(file_path)
         return {"message": "Project successfully imported"}
     except Exception as e:
-        return {"message": f"Failed to import project: {e}"}
+       raise HTTPException(status_code=500, detail=f"Failed to import project: {e}")
 
 
 
