@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 import bpy
-from utils import get_scene_mesh_names
+from inputs import ImportProjectInput
+from utils import get_scene_mesh_names, load_blend_file
+
+
 
 # Create an instance of the FastAPI class
 app = FastAPI()
@@ -9,6 +12,17 @@ app = FastAPI()
 @app.get("/")
 async def root():
     return {"message": "Hello from FastAPI running in Blender!"}
+
+@app.post("/import")
+async def import_project(data: ImportProjectInput):
+    file_path = data.file_path
+    try:
+        load_blend_file(file_path)
+        return {"message": "Project successfully imported"}
+    except Exception as e:
+        return {"message": f"Failed to import project: {e}"}
+
+
 
 @app.get("/meshes")
 async def get_meshes():
