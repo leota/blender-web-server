@@ -20,8 +20,6 @@ async def import_project(data: ImportProjectInput):
     except Exception as e:
        raise HTTPException(status_code=500, detail=f"Failed to import project: {e}")
 
-
-
 @app.get("/meshes")
 async def get_meshes():
     meshes = get_scene_mesh_names()
