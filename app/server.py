@@ -1,11 +1,9 @@
 from fastapi import FastAPI, HTTPException
-import bpy
-from inputs import ImportProjectInput
+from classes import ImportProjectInput
 from utils import get_scene_mesh_names, load_blend_file
+from parser import get_mesh_data
 
 
-
-# Create an instance of the FastAPI class
 app = FastAPI()
 
 
@@ -29,20 +27,7 @@ async def get_meshes():
     meshes = get_scene_mesh_names()
     return {"meshes": meshes}
 
-@app.get("/meshes/{mesh_name}")
+@app.get("/mesh/{mesh_name}")
 async def get_mesh(mesh_name: str):
-    # Get the current scene
-    scene = bpy.context.scene
-
-    # Get the cube object by name
-    cube = scene.objects.get(mesh_name)
-
-    # Check if the cube exists in the scene
-    if cube:
-        # Change the scale on the X-axis to modify the width
-        # For example, setting the width to 2 times the original width
-        cube.scale.x *= 2
-    else:
-        print("Cube object not found in the scene.")
-
-    return {"mesh_name": mesh_name}
+    data = get_mesh_data(mesh_name)
+    return data

@@ -24,7 +24,7 @@ class BlenderInput(BaseModel):
     modifiers: List[Modifier]
 
 load_dotenv()
-BLENDER_PROJECT_PATH = os.getenv("BLENDER_PROJECT_PATH")
+BLENDER_PROJECT_PATH =  os.getenv("BLENDER_PROJECT_PATH")
 app = FastAPI()
 
 @app.get("/meshes")
