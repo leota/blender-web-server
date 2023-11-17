@@ -108,7 +108,6 @@ def get_object_by_name(name):
     if name in bpy.data.objects:
         return bpy.data.objects[name]
     else:
-        print(f"No object found with name: {name}")
         return None
 
 

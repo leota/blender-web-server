@@ -1,9 +1,37 @@
 import bpy
 import logging
+import random
+import string
 from typing import List
 
 
 logging.basicConfig(level=logging.INFO)
+
+
+def generate_random_string(length=8):
+    """
+    Generate a random alphanumeric string.
+
+    Args:
+    length (int): Length of the generated string. Default is 8.
+
+    Returns:
+    str: The generated random string.
+    """
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+
+def get_current_blend_file_path():
+    """
+    Get the path of the currently opened Blender file.
+
+    Returns:
+    str: The file path of the current .blend file, or an empty string if no file is loaded.
+    """
+    file_path = bpy.data.filepath
+    if file_path:
+        return file_path
+    else:
+        return None
 
 def get_scene_mesh_names() -> List[str]:
     try:
@@ -19,9 +47,9 @@ def get_scene_mesh_names() -> List[str]:
         logging.error(f"Failed to get meshes: {e}", exc_info=True)
         raise Exception(f"Failed to get meshes: {e}")
 
-def load_blend_file(blend_file_path: str):
+def import_blend_file(blend_file_path: str):
     """
-    Load a .blend file into the current scene.
+    Import a .blend file into the current scene.
     
     :param blend_file_path: The path to the .blend file.
     """
@@ -37,3 +65,35 @@ def load_blend_file(blend_file_path: str):
                 bpy.context.collection.objects.link(obj)
     except Exception as e:
         raise Exception(f"Failed to load .blend file: {e}")
+    
+def load_blend_file(blend_file_path: str):
+    """
+    Open a .blend file, replacing the current scene.
+    Args:
+    file_path (str): The path to the .blend file.
+    """
+    try:
+        bpy.ops.wm.open_mainfile(filepath=blend_file_path)
+        logging.info(f"Opened file: {blend_file_path}")
+    except Exception as e:
+        logging.error(f"Failed to open file: {e}", exc_info=True)
+        raise Exception(f"Failed to open file: {e}")
+    
+def rename_object(obj_name, new_name):
+    """
+    Rename an object in the Blender scene.
+
+    Args:
+    obj_name (str): The current name of the object.
+    new_name (str): The new name to be assigned to the object.
+
+    Returns:
+    str: The new name of the object, or None if the object is not found.
+    """
+    if obj_name in bpy.data.objects:
+        bpy.data.objects[obj_name].name = new_name
+        return bpy.data.objects[new_name].name
+    else:
+        logging.info(f"Object '{obj_name}' not found.")
+        return None
+

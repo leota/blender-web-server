@@ -1,9 +1,6 @@
 from enum import Enum
 from pydantic import BaseModel
 
-class ImportProjectInput(BaseModel):
-    file_path: str
-
 class ParameterType(Enum):
     Folder = 'Folder'
     String = 'String'
@@ -12,3 +9,13 @@ class ParameterType(Enum):
     Int = 'Int'
     Float = 'Float'
     Menu = 'Menu'
+
+class ImportProjectInput(BaseModel):
+    file_path: str
+
+class LoadProjectInput(BaseModel):
+    file_path: str
+
+class ProjectDataInput(BaseModel):
+    file_path: str
+    object_name: str
