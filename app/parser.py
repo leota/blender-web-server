@@ -6,9 +6,7 @@ from classes import ParameterType
 ALLOWED_PARAMETER_TYPES = ["FLOAT", "INT", "BOOLEAN", "ENUM", "VALUE"]
 
 def format_float(value):
-    float_string = "{:.2e}".format(value)
-    float_string = re.sub(r"(\d+\.\d+)[eE].*", r"\1", float_string)
-    return float_string
+    return "{:.2f}".format(value)
 
 def get_enum_items_from_rna(rna, prop_name):
     enum_items = []
@@ -37,11 +35,9 @@ def format_property_data_geometry_nodes(mod, prop):
         else str(prop.max_value)
         if hasattr(prop, "max_value")
         else "N/A",
-        "defaultValue": format_float(prop.default_value)
-        if hasattr(prop, "default_value") and prop.type in ["FLOAT", "VALUE"]
-        else str(prop.default_value)
-        if hasattr(prop, "default_value")
-        else "N/A",
+        "defaultValue": format_float(mod[prop.identifier])
+        if prop.type in ["FLOAT", "VALUE"]
+        else str(mod[prop.identifier]),
         "options": []
     }
 
@@ -62,10 +58,10 @@ def format_property_data_regular_modifier(mod, prop):
         else str(prop.hard_max)
         if hasattr(prop, "hard_max")
         else "N/A",
-        "defaultValue": format_float(prop.default)
-        if hasattr(prop, "default") and prop.type in ["FLOAT", "VALUE"]
-        else str(prop.default)
-        if hasattr(prop, "default")
+        "defaultValue": format_float(getattr(mod, prop.identifier))
+        if hasattr(mod, prop.identifier) and prop.type in ["FLOAT", "VALUE"]
+        else str(getattr(mod, prop.identifier))
+        if hasattr(mod, prop.identifier)
         else "N/A",
         "options": get_enum_items_from_rna(mod, prop.identifier)
     }
