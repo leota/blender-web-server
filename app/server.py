@@ -1,10 +1,11 @@
+from config import Settings
 from fastapi import FastAPI, HTTPException, Response
 from classes import LoadProjectInput, ProjectDataInput, RenderProjectInput, OutputFormat
-from utils import get_scene_mesh_names, get_current_blend_file_path, load_blend_file
+from utils import get_scene_mesh_names, get_current_blend_file_path, load_blend_file, get_local_file_path
 from parser import get_mesh_data
 from render import render_object
 
-
+env = Settings()
 app = FastAPI()
 
 
@@ -14,7 +15,7 @@ async def root():
     
 @app.post("/project/load")
 async def load_project(data: LoadProjectInput):
-    file_path = data.file_path
+    file_path = get_local_file_path(data.file_path)
     try:
         load_blend_file(file_path)
         meshes = get_scene_mesh_names()
@@ -24,7 +25,7 @@ async def load_project(data: LoadProjectInput):
 
 @app.post("/project/data")
 async def get_project_data(data: ProjectDataInput):
-    file_path = data.file_path
+    file_path = get_local_file_path(data.file_path)
     object_name = data.object_name
 
     current_file_path = get_current_blend_file_path()
@@ -36,7 +37,7 @@ async def get_project_data(data: ProjectDataInput):
 
 @app.post("/project/render")
 async def render_project(data: RenderProjectInput):
-    file_path = data.file_path
+    file_path = get_local_file_path(data.file_path)
     object_name = data.object_name
     modifiers = data.modifiers
 

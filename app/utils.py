@@ -3,8 +3,12 @@ import logging
 import random
 import string
 from typing import List
+from urllib.parse import urlparse
+from pathlib import Path
+from digitalocean.s3 import download_file_from_space, client
+from config import Settings
 
-
+env = Settings()
 logging.basicConfig(level=logging.INFO)
 
 
@@ -19,6 +23,51 @@ def generate_random_string(length=8):
     str: The generated random string.
     """
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+
+
+def is_url(string):
+    parsed = urlparse(string)
+    return all([parsed.scheme, parsed.netloc])
+
+def file_exists(file_path: str):
+    file = Path(file_path)
+    return file.is_file()
+
+def get_filename_from_url(url: str):
+    parsed_url = urlparse(url)
+    path = parsed_url.path
+    filename = path.split('/')[-1]
+    return filename
+
+    
+def get_local_file_path(url: str):
+    """
+    Get the local file path of a file.
+
+    Args:
+    file_path (str): The file path.
+
+    Returns:
+    str: The local file path.
+    """
+    if is_url(url):
+        local_file_path = f"{env.PROJECTS_FOLDER}/{get_filename_from_url(url)}"
+        if file_exists(local_file_path):
+            return local_file_path
+        else:
+            file_path_without_base_url = url.split(
+                f"https://{env.DO_SPACES_BUCKET_NAME}.{env.DO_SPACES_REGION}.digitaloceanspaces.com/"
+            )[-1]
+            download_file_from_space(
+                client,
+                env.DO_SPACES_BUCKET_NAME,
+                file_path_without_base_url,
+                local_file_path,
+            )
+            return local_file_path
+    else:
+        return url
+
 
 def get_current_blend_file_path():
     """

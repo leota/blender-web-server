@@ -4,7 +4,9 @@ import logging
 from typing import List
 from classes import Modifier, OutputFormat
 from utils import generate_random_string
+from config import Settings
 
+env = Settings()
 logging.basicConfig(level=logging.INFO)
 
 def render_object(object_name: str, modifiers: List[Modifier], output_format: OutputFormat):
@@ -12,7 +14,7 @@ def render_object(object_name: str, modifiers: List[Modifier], output_format: Ou
     if update_result:
         output_file_name = f"{object_name}_{generate_random_string()}"
         if output_format == OutputFormat.GLB:
-            return render_object_to_glb(object_name, "/tmp/blender", output_file_name)
+            return render_object_to_glb(object_name, env.OUTPUT_FOLDER, output_file_name)
         else:
             raise Exception(f"Unsupported output format: {output_format}")
     else:

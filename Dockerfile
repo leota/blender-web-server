@@ -2,14 +2,14 @@ FROM linuxserver/blender:latest
 
 RUN apt-get update && apt-get install -y python3 python3-pip
 
-RUN pip3 install fastapi uvicorn numpy python-dotenv
+RUN pip3 install fastapi uvicorn numpy python-dotenv pydantic-settings boto3
 
-RUN mkdir /tmp/blender
+RUN mkdir /tmp/output
+RUN mkdir /tmp/projects
 
 WORKDIR /app
 
 COPY ./app /app
-COPY ./projects /projects
 
 EXPOSE 8000
 
