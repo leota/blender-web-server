@@ -2,7 +2,7 @@ import os
 import bpy
 import logging
 from typing import List
-from classes import Modifier, OutputFormat
+from classes import Modifier, OutputFormat, ParameterType
 from utils import generate_random_string
 from config import Settings
 
@@ -54,14 +54,14 @@ def update_object(object_name: str, modifiers: List[Modifier]) -> bool:
     bpy.context.object.data.update()
     return True
 
-def convert_parameter_value(value: str, parameter_type: str):
-    if parameter_type == "FLOAT" or parameter_type == "VALUE":
+def convert_parameter_value(value: str, parameter_type: ParameterType):
+    if parameter_type == ParameterType.Float:
         return float(value)
-    elif parameter_type == "INT":
+    elif parameter_type == ParameterType.Int:
         return int(value)
-    elif parameter_type == "BOOLEAN":
+    elif parameter_type == ParameterType.Boolean:
         return value.lower() == "true"
-    elif parameter_type == "ENUM":
+    elif parameter_type == ParameterType.Menu:
         return value  # Assuming the value is already a valid enum value
     else:
         logging.warn(f"Unsupported parameter type: {parameter_type}")

@@ -5,8 +5,43 @@ from classes import ParameterType
 
 ALLOWED_PARAMETER_TYPES = ["FLOAT", "INT", "BOOLEAN", "ENUM", "VALUE"]
 
-def format_float(value):
-    return "{:.2f}".format(value)
+def format_number(value):
+    if isinstance(value, float):
+        if value > 1000:
+            return 150.00
+        return round(value, 2)
+    elif isinstance(value, int):
+        if value > 1000:
+            return 150
+        return value
+    else:
+        raise Exception(f"Invalid value type: {type(value)}")
+    
+
+def parse_parameter_type(prop_type) -> ParameterType:
+    if prop_type == "FLOAT" or prop_type == "VALUE":
+        return ParameterType.Float
+    elif prop_type == "INT":
+        return ParameterType.Int
+    elif prop_type == "BOOLEAN":
+        return ParameterType.Boolean
+    elif prop_type == "ENUM":
+        return ParameterType.Menu
+    else:
+        return ParameterType.String
+
+    
+def format_prop_value(prop, prop_name: str):
+    if hasattr(prop, prop_name) and prop.type in ["FLOAT", "VALUE", "INT"]:
+        return format_number(getattr(prop, prop_name))
+    elif hasattr(prop, prop_name) and prop.type in ["BOOLEAN"]:
+        if getattr(prop, prop_name) == "True":
+            return "true"
+        else:
+            return "false"
+    else:
+        return None
+    
 
 def get_enum_items_from_rna(rna, prop_name):
     enum_items = []
@@ -24,20 +59,12 @@ def format_property_data_geometry_nodes(mod, prop):
         "label": str(prop.name),
         "name": str(prop.identifier),
         "path": f"{mod.name}/{prop.identifier}",
-        "type": str(prop.bl_label),
-        "min": format_float(prop.min_value)
-        if hasattr(prop, "min_value") and prop.type in ["FLOAT", "VALUE"]
-        else str(prop.min_value)
-        if hasattr(prop, "min_value")
-        else "N/A",
-        "max": format_float(prop.max_value)
-        if hasattr(prop, "max_value") and prop.type in ["FLOAT", "VALUE"]
-        else str(prop.max_value)
-        if hasattr(prop, "max_value")
-        else "N/A",
-        "defaultValue": format_float(mod[prop.identifier])
-        if prop.type in ["FLOAT", "VALUE"]
-        else str(mod[prop.identifier]),
+        "type": parse_parameter_type(str(prop.bl_label)),
+        "min": format_prop_value(prop, "min_value"),
+        "max": format_prop_value(prop, "max_value"),
+        "defaultValue": str(format_number(mod[prop.identifier]))
+        if prop.type in ["FLOAT", "VALUE", "INT"]
+        else str(mod[prop.identifier]).lower(),
         "options": []
     }
 
@@ -47,22 +74,14 @@ def format_property_data_regular_modifier(mod, prop):
         "label": str(prop.name),
         "name": str(prop.identifier),
         "path": f"{mod.name}/{prop.identifier}",
-        "type": str(prop.type),
-        "min": format_float(prop.hard_min)
-        if hasattr(prop, "hard_min") and prop.type in ["FLOAT", "VALUE"]
-        else str(prop.hard_min)
-        if hasattr(prop, "hard_min")
-        else "N/A",
-        "max": format_float(prop.hard_max)
-        if hasattr(prop, "hard_max") and prop.type in ["FLOAT", "VALUE"]
-        else str(prop.hard_max)
-        if hasattr(prop, "hard_max")
-        else "N/A",
-        "defaultValue": format_float(getattr(mod, prop.identifier))
-        if hasattr(mod, prop.identifier) and prop.type in ["FLOAT", "VALUE"]
-        else str(getattr(mod, prop.identifier))
+        "type": parse_parameter_type(str(prop.type)),
+        "min": format_prop_value(prop, "hard_min"),
+        "max": format_prop_value(prop, "hard_max"),
+        "defaultValue": str(format_number(getattr(mod, prop.identifier)))
+        if hasattr(mod, prop.identifier) and prop.type in ["FLOAT", "VALUE", "INT"]
+        else str(getattr(mod, prop.identifier)).lower()
         if hasattr(mod, prop.identifier)
-        else "N/A",
+        else None,
         "options": get_enum_items_from_rna(mod, prop.identifier)
     }
 
@@ -70,7 +89,7 @@ def process_modifier(mod):
     mod_data = {
         "name": str(mod.name),
         "label": str(mod.name),
-        "mod_type": str(mod.type),
+        "path": str(mod.name),
         "type": str(ParameterType.Folder.value),
         "children": []
     }
