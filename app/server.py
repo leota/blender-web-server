@@ -1,19 +1,20 @@
 from config import Settings
-from fastapi import FastAPI, HTTPException, Response
+from fastapi import FastAPI, APIRouter, HTTPException, Response
 from classes import LoadProjectInput, ProjectDataInput, RenderProjectInput, OutputFormat
 from utils import get_scene_mesh_names, get_current_blend_file_path, load_blend_file, get_local_file_path
-from parser import get_mesh_data
+from parsing import get_mesh_data
 from render import render_object
 
 env = Settings()
 app = FastAPI()
+api_router = APIRouter()
 
 
-@app.get("/healthcheck")
+@api_router.get("/healthcheck")
 async def root():
     return Response(status_code=200, content="OK")
     
-@app.post("/project/load")
+@api_router.post("/project/load")
 async def load_project(data: LoadProjectInput):
     file_path = get_local_file_path(data.file_path)
     try:
@@ -23,7 +24,7 @@ async def load_project(data: LoadProjectInput):
     except Exception as e:
        raise HTTPException(status_code=500, detail=f"Failed to load project: {e}")
 
-@app.post("/project/data")
+@api_router.post("/project/data")
 async def get_project_data(data: ProjectDataInput):
     file_path = get_local_file_path(data.file_path)
     object_name = data.object_name
@@ -35,7 +36,7 @@ async def get_project_data(data: ProjectDataInput):
     data = get_mesh_data(object_name)
     return data
 
-@app.post("/project/render")
+@api_router.post("/project/render")
 async def render_project(data: RenderProjectInput):
     file_path = get_local_file_path(data.file_path)
     object_name = data.object_name
@@ -52,4 +53,4 @@ async def render_project(data: RenderProjectInput):
         raise HTTPException(status_code=500, detail=f"Failed to render project: {e}")
     
 
-
+app.include_router(api_router, prefix="/api")
