@@ -1,5 +1,6 @@
 from config import Settings
 from fastapi import FastAPI, APIRouter, HTTPException, Response
+from fastapi.responses import FileResponse
 from classes import LoadProjectInput, ProjectDataInput, RenderProjectInput, OutputFormat
 from utils import get_scene_mesh_names, get_current_blend_file_path, load_blend_file, get_local_file_path
 from parsing import get_mesh_data
@@ -48,7 +49,7 @@ async def render_project(data: RenderProjectInput):
 
     try:
         out_path = render_object(object_name, modifiers, OutputFormat.GLB)
-        return {"out_path": out_path}
+        return FileResponse(out_path, media_type="application/octet-stream")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to render project: {e}")
     
