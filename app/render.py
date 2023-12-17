@@ -9,16 +9,22 @@ from config import Settings
 env = Settings()
 logging.basicConfig(level=logging.INFO)
 
-def render_object(object_name: str, modifiers: List[Modifier], output_format: OutputFormat):
+
+def render_object(
+    object_name: str, modifiers: List[Modifier], output_format: OutputFormat
+):
     update_result = update_object(object_name, modifiers)
     if update_result:
         output_file_name = f"{object_name}_{generate_random_string()}"
         if output_format == OutputFormat.GLB:
-            return render_object_to_glb(object_name, env.OUTPUT_FOLDER, output_file_name)
+            return render_object_to_glb(
+                object_name, env.OUTPUT_FOLDER, output_file_name
+            )
         else:
             raise Exception(f"Unsupported output format: {output_format}")
     else:
         raise Exception("Failed to update object")
+
 
 def update_object(object_name: str, modifiers: List[Modifier]) -> bool:
     # Get the object by name
@@ -43,29 +49,44 @@ def update_object(object_name: str, modifiers: List[Modifier]) -> bool:
             # Check if the modifier is a Geometry Nodes modifier
             if modifier.type == "NODES":
                 # Handle Geometry Nodes parameters
-                obj.modifiers[mod.name][param.name] = convert_parameter_value(param.value, param.type)
+                obj.modifiers[mod.name][param.name] = convert_parameter_value(
+                    param.value, param.type
+                )
             else:
                 # Handle other types of parameters
                 if hasattr(modifier, param.name):
-                    setattr(modifier, param.name, convert_parameter_value(param.value, param.type))
+                    setattr(
+                        modifier,
+                        param.name,
+                        convert_parameter_value(param.value, param.type),
+                    )
                 else:
-                    raise Exception(f"Parameter not found: {param.name} in modifier {mod.name}")
+                    raise Exception(
+                        f"Parameter not found: {param.name} in modifier {mod.name}"
+                    )
 
     bpy.context.object.data.update()
     return True
 
-def convert_parameter_value(value: str, parameter_type: ParameterType):
-    if parameter_type == ParameterType.Float:
-        return float(value)
-    elif parameter_type == ParameterType.Int:
-        return int(value)
-    elif parameter_type == ParameterType.Boolean:
-        return value.lower() == "true"
-    elif parameter_type == ParameterType.Menu:
-        return value  # Assuming the value is already a valid enum value
-    else:
+
+def convert_parameter_value(value: str, parameter_type: str):
+    try:
+        parameter_type_enum = ParameterType[parameter_type]
+    except KeyError:
         logging.warn(f"Unsupported parameter type: {parameter_type}")
         return value
+
+    if parameter_type_enum == ParameterType.Float:
+        return float(value)
+    elif parameter_type_enum == ParameterType.Int:
+        return int(value)
+    elif parameter_type_enum == ParameterType.Boolean:
+        return value.lower() == "true"
+    elif parameter_type_enum == ParameterType.Menu:
+        return value  # Assuming the value is already a valid enum value
+    else:
+        return value
+
 
 def render_object_to_glb(object_name: str, out_dir: str, out_file_name: str):
     # Select the object by name

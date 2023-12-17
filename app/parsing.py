@@ -53,6 +53,17 @@ def get_enum_items_from_rna(rna, prop_name):
     
     return enum_items
 
+def format_geometry_nodes_modifier_default_value(mod, prop):
+    # Format default value for Geometry Nodes inputs
+    if hasattr(mod, prop.identifier) and prop.type in ["FLOAT", "VALUE", "INT"]:
+        return str(format_number(mod[prop.identifier]))
+    elif hasattr(mod, prop.identifier) and prop.type in ["BOOLEAN"]:
+        return str(mod[prop.identifier]).lower()
+    elif hasattr(mod, prop.identifier) and prop.type in ["ENUM"]:
+        return str(mod[prop.identifier])
+    else:
+        return None
+
 def format_property_data_geometry_nodes(mod, prop):
     # Format data for Geometry Nodes inputs
     return {
@@ -62,11 +73,20 @@ def format_property_data_geometry_nodes(mod, prop):
         "type": parse_parameter_type(str(prop.bl_label)),
         "min": format_prop_value(prop, "min_value"),
         "max": format_prop_value(prop, "max_value"),
-        "defaultValue": str(format_number(mod[prop.identifier]))
-        if prop.type in ["FLOAT", "VALUE", "INT"]
-        else str(mod[prop.identifier]).lower(),
+        "defaultValue": format_geometry_nodes_modifier_default_value(mod, prop),
         "options": []
     }
+
+def format_regular_modifier_default_value(mod, prop):
+    # Format default value for regular modifiers
+    if hasattr(mod, prop.identifier) and prop.type in ["FLOAT", "VALUE", "INT"]:
+        return str(format_number(getattr(mod, prop.identifier)))
+    elif hasattr(mod, prop.identifier) and prop.type in ["BOOLEAN"]:
+        return str(getattr(mod, prop.identifier)).lower()
+    elif hasattr(mod, prop.identifier) and prop.type in ["ENUM"]:
+        return str(getattr(mod, prop.identifier))
+    else:
+        return None
 
 def format_property_data_regular_modifier(mod, prop):
     # Format data for regular modifiers
@@ -77,11 +97,7 @@ def format_property_data_regular_modifier(mod, prop):
         "type": parse_parameter_type(str(prop.type)),
         "min": format_prop_value(prop, "hard_min"),
         "max": format_prop_value(prop, "hard_max"),
-        "defaultValue": str(format_number(getattr(mod, prop.identifier)))
-        if hasattr(mod, prop.identifier) and prop.type in ["FLOAT", "VALUE", "INT"]
-        else str(getattr(mod, prop.identifier)).lower()
-        if hasattr(mod, prop.identifier)
-        else None,
+        "defaultValue": format_regular_modifier_default_value(mod, prop),
         "options": get_enum_items_from_rna(mod, prop.identifier)
     }
 
