@@ -70,7 +70,7 @@ def format_property_data_geometry_nodes(mod, prop):
         "label": str(prop.name),
         "name": str(prop.identifier),
         "path": f"{mod.name}/{prop.identifier}",
-        "type": parse_parameter_type(str(prop.bl_label)),
+        "type": parse_parameter_type(str(prop.type)),
         "min": format_prop_value(prop, "min_value"),
         "max": format_prop_value(prop, "max_value"),
         "defaultValue": format_geometry_nodes_modifier_default_value(mod, prop),
