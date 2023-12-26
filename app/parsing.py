@@ -1,5 +1,4 @@
 import bpy
-import re
 
 from classes import ParameterType
 
@@ -54,12 +53,14 @@ def get_enum_items_from_rna(rna, prop_name):
     return enum_items
 
 def format_geometry_nodes_modifier_default_value(mod, prop):
-    # Format default value for Geometry Nodes inputs
-    if hasattr(mod, prop.identifier) and prop.type in ["FLOAT", "VALUE", "INT"]:
+    if mod[prop.identifier] is None:
+        return None
+    
+    if prop.type in ["FLOAT", "VALUE", "INT"]:
         return str(format_number(mod[prop.identifier]))
-    elif hasattr(mod, prop.identifier) and prop.type in ["BOOLEAN"]:
+    elif prop.type in ["BOOLEAN"]:
         return str(mod[prop.identifier]).lower()
-    elif hasattr(mod, prop.identifier) and prop.type in ["ENUM"]:
+    elif prop.type in ["ENUM"]:
         return str(mod[prop.identifier])
     else:
         return None
@@ -79,11 +80,14 @@ def format_property_data_geometry_nodes(mod, prop):
 
 def format_regular_modifier_default_value(mod, prop):
     # Format default value for regular modifiers
-    if hasattr(mod, prop.identifier) and prop.type in ["FLOAT", "VALUE", "INT"]:
+    if hasattr(mod, prop.identifier) is None:
+        return None
+    
+    if prop.type in ["FLOAT", "VALUE", "INT"]:
         return str(format_number(getattr(mod, prop.identifier)))
-    elif hasattr(mod, prop.identifier) and prop.type in ["BOOLEAN"]:
+    elif prop.type in ["BOOLEAN"]:
         return str(getattr(mod, prop.identifier)).lower()
-    elif hasattr(mod, prop.identifier) and prop.type in ["ENUM"]:
+    elif prop.type in ["ENUM"]:
         return str(getattr(mod, prop.identifier))
     else:
         return None
