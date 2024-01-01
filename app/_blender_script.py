@@ -3,12 +3,18 @@ import platform
 import bpy
 import os
 
-if platform.system() == 'Darwin':
+if platform.system() == "Darwin":
     # macOS
-    sys.path.append('/Users/leonardo/.local/lib/python3.10/site-packages')
+    sys.path.append("/Users/leonardo/.local/lib/python3.10/site-packages")
 else:
     # Linux
-    sys.path.append('/usr/local/lib/python3.10/dist-packages')
+    dist_packages_dirs = [
+        "/usr/local/lib/python3.10/dist-packages",
+        "/usr/lib/python3/dist-packages",
+        "/usr/lib/python3.10/dist-packages",
+    ]
+    for dist_packages_dir in dist_packages_dirs:
+        sys.path.append(dist_packages_dir)
 
 # Assuming server.py is in the same directory as your Blender script
 dir = os.path.dirname(bpy.data.filepath)
