@@ -11,7 +11,7 @@ WORKDIR /app
 
 COPY ./app /app
 
-EXPOSE 8000
+EXPOSE 8080
 
 # blender -b server.blend --python _blender_script.py
 ENTRYPOINT ["blender", "/app/server.blend", "--background", "--python", "/app/_blender_script.py"]

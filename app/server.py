@@ -1,5 +1,5 @@
 from config import Settings
-from fastapi import FastAPI, APIRouter, HTTPException, Response
+from fastapi import FastAPI, APIRouter, HTTPException
 from fastapi.responses import FileResponse
 from classes import LoadProjectInput, ProjectDataInput, RenderProjectInput, OutputFormat
 from utils import get_scene_mesh_names, get_current_blend_file_path, load_blend_file, get_local_file_path
@@ -13,7 +13,11 @@ api_router = APIRouter()
 
 @api_router.get("/healthcheck")
 async def root():
-    return Response(status_code=200, content="OK")
+    return {
+        "app_name": env.app_name,
+        "app_env": env.APP_ENV,
+        "environment": env.ENVIRONMENT,
+    }
     
 @api_router.post("/project/load")
 async def load_project(data: LoadProjectInput):

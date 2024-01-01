@@ -25,7 +25,7 @@ from server import app
 import uvicorn
 
 def run_server():
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8080)
 
 # Start the FastAPI server in a new thread (only if running in Blender graphics mode)
 # import threading
