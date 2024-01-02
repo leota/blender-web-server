@@ -9,7 +9,7 @@
 ### Build and run
 ```
 docker build -t blender-container .
-docker run -it --rm -p 8000:8000 blender-container
+docker run -it --rm -p 8080:8080 blender-container
 ```
 
 ## Access container bash shell

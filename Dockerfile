@@ -1,4 +1,4 @@
-FROM linuxserver/blender:4.0.2-ls87
+FROM linuxserver/blender:3.6.5-ls78
 
 RUN apt-get update && apt-get install -y python3 python3-pip
 
