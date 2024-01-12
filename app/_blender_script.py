@@ -6,6 +6,7 @@ import os
 if platform.system() == "Darwin":
     # macOS
     sys.path.append("/Users/leonardo/.local/lib/python3.10/site-packages")
+    sys.path.append("/Users/leonardo/.pyenv/versions/3.10.9/lib/python3.10/site-packages")
 else:
     # Linux
     dist_packages_dirs = [

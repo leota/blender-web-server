@@ -1,12 +1,15 @@
 from config import Settings
 from fastapi import FastAPI, APIRouter, HTTPException
 from fastapi.responses import FileResponse
+from sentry.client import init_sentry
 from classes import LoadProjectInput, ProjectDataInput, RenderProjectInput, OutputFormat
 from utils import get_scene_mesh_names, get_current_blend_file_path, load_blend_file, get_local_file_path
 from parsing import get_mesh_data
 from render import render_object
 
 env = Settings()
+
+init_sentry()
 app = FastAPI()
 api_router = APIRouter()
 
@@ -15,7 +18,6 @@ api_router = APIRouter()
 async def root():
     return {
         "app_name": env.app_name,
-        "app_env": env.APP_ENV,
         "environment": env.ENVIRONMENT,
     }
     
@@ -56,6 +58,10 @@ async def render_project(data: RenderProjectInput):
         return FileResponse(out_path, media_type="application/octet-stream")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to render project: {e}")
+    
+@app.get("/sentry-debug")
+async def trigger_error():
+    division_by_zero = 1 / 0
     
 
 app.include_router(api_router, prefix="/api")

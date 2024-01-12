@@ -1,4 +1,4 @@
-import os, boto3
+import boto3
 import mimetypes
 from config import Settings
 

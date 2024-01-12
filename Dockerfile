@@ -2,7 +2,7 @@ FROM linuxserver/blender:3.6.5-ls78
 
 RUN apt-get update && apt-get install -y python3 python3-pip
 
-RUN pip3 install fastapi uvicorn numpy python-dotenv pydantic-settings boto3
+RUN pip3 install fastapi uvicorn numpy python-dotenv pydantic-settings boto3 'sentry-sdk[fastapi]'
 
 RUN mkdir /tmp/output
 RUN mkdir /tmp/projects

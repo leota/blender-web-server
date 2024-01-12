@@ -3,7 +3,6 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     app_name: str = "Blender Engine API"
-    APP_ENV: str
     ENVIRONMENT: str
     SENTRY_DSN: str
     DO_SPACES_REGION: str
