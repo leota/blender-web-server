@@ -1,6 +1,6 @@
 # blender-engine
 
-## Development
+## Run locally
 - Copy `./app/env-example` to `./app/.env` and add teh required variables.
 - Run `./dev.sh`
 
@@ -11,16 +11,4 @@
 ```
 docker build -t blender-container .
 docker run -it --rm -p 8080:8080 blender-container
-```
-
-## Access container bash shell
-```
-docker exec -it blender-container /bin/bash
-
-```
-
-### Upload to DO
-```
-docker tag blender-container registry.digitalocean.com/polygona/blender-engine
-docker push registry.digitalocean.com/polygona/blender-engine
 ```
