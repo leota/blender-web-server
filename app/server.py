@@ -59,9 +59,5 @@ async def render_project(data: RenderProjectInput):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to render project: {e}")
     
-@app.get("/sentry-debug")
-async def trigger_error():
-    division_by_zero = 1 / 0
-    
 
 app.include_router(api_router, prefix="/api")

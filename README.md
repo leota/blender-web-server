@@ -1,7 +1,8 @@
 # blender-engine
 
 ## Development
-`cd app && uvicorn main:app --reload`
+- Copy `./app/env-example` to `./app/.env` and add teh required variables.
+- Run `./dev.sh`
 
 
 ## Docker
