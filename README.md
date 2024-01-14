@@ -39,5 +39,11 @@ This will create a Docker image named `blender-container` and run it, making the
 ## Contributing
 We welcome contributions to `blender-web-server`! Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on how to submit pull requests, and expectations regarding code contributions.
 
+
+## Support
+If you find this project valuable or if it helps you in your projects, consider sponsoring it through GitHub Sponsors! Your support is essential to maintain and develop the project further.
+
+[SPONSOR ME](https://github.com/sponsors/leota)
+
 ## License
 This project is licensed under the GNU General Public License - see the [LICENSE](LICENSE.md) file for details.
